@@ -1,0 +1,21 @@
+<html>
+<head>
+    <link rel="stylesheet" href="Style/Style1.css">
+    <link rel="stylesheet" href="Style/Style2.css">
+<script language="javascript">
+    window.addEventListener("load", readAll)
+    function readAll() {
+        fetch("http://localhost:7777/retrieve")
+        .then(response => response.json())
+        .then(function(data) {
+            data.forEach(row => updateList.innerHTML 
+            += `<a href=update-one.html?guestid=${row.guestid}>${row.guestid}</a>,${row.guestname},${row.guestage},${row.guestcomment}<br>`)
+        })
+    }
+</script>
+</head>
+<body>
+    <h1>Minimal CRUD Update User Interface</h1>
+    <div id="updateList"></div>
+</body>
+</html>

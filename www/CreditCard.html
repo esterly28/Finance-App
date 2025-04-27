@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Credit Card Form</title>
+    <style>
+        body {
+            background-color: #ccc; /* light grey */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            width: 350px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+        }
+
+        input[type="button"] {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin-top: 15px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        window.addEventListener("load", function () {
+            document.getElementById("btn").addEventListener("click", sendData);
+        });
+
+        function sendData() {
+            const data = {
+                interest: document.getElementById("guestid").value,
+                amount: parseFloat(document.getElementById("loanName").value),
+                timeToPayOff: document.getElementById("guestage").value,
+                provider: document.getElementById("guestcomment").value
+            };
+
+            fetch("http://localhost:7777/creditcards", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert(result.message || "Credit card data saved successfully!");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("There was a problem submitting your data.");
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Credit Card Information</h1>
+        Annual interest rate(%): <input id="guestid" type="text"><br>
+        Current amount needed to payoff: <input id="loanName" type="number"><br>
+        Desired time to pay off (years): <input id="guestage" type="text"><br>
+        Card Nickname: <input id="guestcomment" type="text"><br>
+        <input type="button" id="btn" value="UPDATE">
+        <a href="index.html" class="cancel-button">Cancel</a>
+    </div>
+</body>
+</html>

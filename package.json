@@ -1,0 +1,13 @@
+{
+  "name": "finance",
+  "version": "1.0.0",
+  "main": "finance.js",
+  "scripts": {
+    "start": "node finance"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongodb": "^5.7.0"
+  }
+}

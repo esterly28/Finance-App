@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Your Financial Layout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            padding: 30px;
+        }
+        .card {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+    </style>
+    <script>
+        window.addEventListener("load", () => {
+            fetch("http://localhost:7777/retrieve")
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById("records");
+                    container.innerHTML = "";
+
+                    data.forEach((item, index) => {
+                        const card = document.createElement("div");
+                        card.className = "card";
+                        card.innerHTML = `
+                            <strong>Interest:</strong> ${item.interest}<br>
+                            <strong>Amount:</strong> ${item.amount}<br>
+                            <strong>Time to Pay Off:</strong> ${item.timeToPayOff}<br>
+                            <strong>Provider:</strong> ${item.provider}<br>
+                            <strong>Entry Date:</strong> ${new Date(item.entryDate).toLocaleString()}
+                        `;
+                        container.appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("records").innerText = "Failed to load records.";
+                });
+        });
+    </script>
+</head>
+<body>
+    <h1>Your Financial Layout</h1>
+    <div id="records">Loading...</div>
+    <br>
+    <a href="index.html" class="cancel-button">Cancel</a>
+    <a href="create.html">Create</a><br>
+    <a href="delete.html">Delete</a><br>
+</body>
+</html>

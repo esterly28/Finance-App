@@ -1,0 +1,152 @@
+require("dotenv").config();
+console.log("Mongo URI:", process.env.MONGO_URI);
+let { MongoClient } = require("mongodb")
+let uri = process.env.MONGO_URI;
+let client = new MongoClient(uri)
+
+let express = require("express")
+let path    = require("path")
+
+require("dotenv").config();
+
+let app  = express()
+let port = process.env.PORT || 7777
+
+app.use(express.static("www"))
+app.use(express.json())
+
+app.listen(port, function() {
+    console.log(`Full-stack app is listening on port ${port}`)
+})
+
+app.get("/helloworld", function (req, res) {
+    res.send("Hello World: Nolan Esterly and finance!")
+})
+app.get("/", function (req, res) {
+    res.sendFile(path.join(__dirname, "www", "/index.html"))
+})
+
+app.get('/retrieve', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db('Finance_Storage');
+        const collection = db.collection('creditcards');
+        const records = await collection.find({}).toArray();
+        res.json(records);
+    } catch (err) {
+        console.error("Error retrieving data:", err);
+        res.status(500).json({ message: 'Failed to retrieve data' });
+    }
+});
+
+app.get("/retrieve-one/:guestid", function(req, res) {
+    async function run() {
+        try {
+          await client.connect()
+          database = client.db('Finance_Storage')
+          table = database.collection('creditcards')
+          query = { guestid: parseInt(req.params.guestid) }
+          row = await table.findOne(query)
+          res.send(JSON.stringify(row))
+        } finally {
+          await client.close()
+        }
+      }
+      run()
+})
+
+app.post("/CreditCard", function (req, res) {
+    async function run() {
+        try {
+            await client.connect()
+            database = client.db("Finance_Storage")
+            table    = database.collection("loans")
+            record   = {
+                guestid      : parseInt(req.body.guestid),
+                guestname    : req.body.guestname,
+                guestage     : parseInt(req.body.guestage),
+                guestcomment : req.body.guestcomment,
+                guestdate    : new Date()
+            }
+            result = await table.insertOne(record)
+  //          res.send(JSON.stringify(req.body)) // echo body
+        } finally {
+            await client.close()
+        }
+    }
+    run()
+})
+
+app.delete("/delete/:guestid", function(req, res) {
+    async function run() {
+        try {
+            await client.connect()
+            database = client.db("Finance_Storage")
+            table    = database.collection("loans")
+            query    = { guestid: parseInt(req.params.guestid) }
+            result   = await table.deleteOne(query)
+        } finally {
+            await client.close()
+        }
+    }
+    run()
+})
+
+app.put("/update", function(req, res) {
+    async function run() {
+        try {
+            await client.connect()
+            database  = client.db("Finance_Storage")
+            table     = database.collection("loans")
+            where     = {guestid: parseInt(req.body.guestid)}
+            changes   = {$set:{
+                guestname    : req.body.guestname,
+                guestage     : parseInt(req.body.guestage),
+                guestcomment : req.body.guestcomment}}
+            result    = await table.updateOne(where, changes)
+        } finally {
+            await client.close()
+        }
+    }
+    run()
+})
+app.post("/creditcards", function (req, res) {
+    const client = new MongoClient(uri) // 🔁 fresh client
+    async function run() {
+        try {
+            await client.connect()
+            const database = client.db("Finance_Storage")
+            const table = database.collection("creditcards")
+
+            const record = {
+                interest: req.body.interest,
+                amount: parseFloat(req.body.amount),
+                timeToPayOff: req.body.timeToPayOff,
+                provider: req.body.provider,
+                entryDate: new Date()
+            }
+
+            const result = await table.insertOne(record)
+            res.send({ message: "Credit card saved successfully!" })
+        } catch (err) {
+            console.error("Error inserting credit card:", err)
+            res.status(500).send({ error: err.message })
+        } finally {
+            await client.close()
+        }
+    }
+    run()
+})
+app.post('/loans', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db("Finance_Storage");
+        const collection = db.collection("Loans");
+
+        const result = await collection.insertOne(req.body);
+        res.json({ message: "Loan information saved!", id: result.insertedId });
+    } catch (err) {
+        console.error("Error inserting loan data:", err);
+        res.status(500).json({ message: "Failed to save loan data." });
+    }
+});

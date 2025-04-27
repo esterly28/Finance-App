@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Information</title>
+    <style>
+        body {
+            background-color: #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        input {
+            margin: 8px 0;
+            padding: 8px;
+            width: 90%;
+            font-size: 1em;
+        }
+        input[type="button"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        
+        window.addEventListener("load", () => {
+            document.getElementById("btn").addEventListener("click", sendData);
+        });
+
+        function sendData() {
+            const data = {
+                interest: document.getElementById("guestid").value,
+                amount: parseFloat(document.getElementById("loanName").value),
+                timeToPayOff: document.getElementById("guestage").value,
+                provider: document.getElementById("guestcomment").value,
+                entryDate: new Date()
+            };
+
+            fetch("http://localhost:7777/loans", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert(result.message || "Loan information saved successfully!");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("There was a problem submitting your loan data.");
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Loan Information</h1>
+    Interest (%): <input id="guestid" type="text"><br>
+    Amount needed to payoff: <input id="loanName" type="number"><br>
+    Desired time to pay off: <input id="guestage" type="text"><br>
+    Loan Provider: <input id="guestcomment" type="text"><br>
+    <input type="button" id="btn" value="UPDATE"><br>
+</div>
+</body>
+</html>

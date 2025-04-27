@@ -1,0 +1,47 @@
+<html>
+<head>
+    <link rel="stylesheet" href="Style/Style1.css">
+    <link rel="stylesheet" href="Style/Style2.css">
+<script language="javascript">
+    window.addEventListener("load", main)
+    function main() {
+        readOne()
+        btn.addEventListener("click", writeOne)
+    }
+    function readOne() {
+        params = (new URL(document.location)).searchParams
+        id = params.get("guestid")
+        fetch("http://localhost:7777/retrieve-one/"+id)
+        .then(response => response.json())
+        .then(function(data) {
+            guestid.value = data.guestid
+            guestname.value = data.guestname
+            guestage.value = data.guestage
+            guestcomment.value = data.guestcomment
+        })
+    }
+    function writeOne() {
+        data = {
+            guestid      : guestid.value,
+            guestname    : guestname.value,
+            guestage     : guestage.value,
+            guestcomment : guestcomment.value
+        }    
+        fetch("http://localhost:7777/update", { 
+            method  : 'PUT',
+            headers : { "Content-Type": "application/json"},
+            body    : JSON.stringify(data)
+        })
+        location.href="retrieve.html"
+    }
+</script>
+</head>
+<body>
+    <h1>Minimal CRUD Update One Record</h1>
+    <input id="guestid" style="visibility:hidden"><br>
+    name: <input id="guestname"><br>
+    age: <input id="guestage"><br>
+    comment: <input id="guestcomment"><br>
+    <input type="button" id="btn" value="Update">
+</body>
+</html>

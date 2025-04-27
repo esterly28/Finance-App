@@ -1,0 +1,40 @@
+<html>
+<head>
+<script>
+window.addEventListener("load", main)
+function main() {
+    btn.addEventListener("click", sendData)
+}
+
+function sendData() {
+    data = {
+        guestid      : guestid.value,
+        loanName     : loanName.value,
+        guestage     : guestage.value,
+        guestcomment : guestcomment.value
+    }
+    url = "http://localhost:7777/create"
+    
+    fetch(url, { 
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    location.href="retrieve.html"
+}
+</script>
+</head>
+<body>
+<h1>Add a Financial</h1>
+Id: <input id = "guestid"><br>
+Loan Amt: <input id = "loanName"><br>
+Length: <input id = "guestage"><br>
+Comment: <input id = "guestcomment"><br>
+<input type="button" id="btn" value="CREATE"><br>
+
+<a href="index.html">Home</a><br>
+
+</body>
+</html>

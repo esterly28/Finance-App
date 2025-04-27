@@ -1,0 +1,17 @@
+<html>
+<head>
+    <link rel="stylesheet" href="Style/Style1.css">
+    <link rel="stylesheet" href="Style/Style2.css">
+<script language="javascript">
+    window.addEventListener("load", deleteOne)
+    function deleteOne() {
+        params = (new URL(document.location)).searchParams
+        guestid = params.get("guestid")
+        fetch("http://localhost:7777/delete/"+guestid, {method:"DELETE"})
+        location.href="retrieve.html"
+    }
+</script>
+</head>
+<body>
+</body>
+</html>
