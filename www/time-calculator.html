@@ -30,7 +30,39 @@
       margin-top: 20px;
       font-weight: bold;
     }
+
+    .sidebar {
+      width: 40%;
+      padding: 20px;
+    }
+
+    .autofill-btn {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
   </style>
+</head>
+<body>
+  <div style="display: flex; max-width: 1000px; margin: auto;">
+    <div class="sidebar">
+      <h3>Autofill</h3>
+      <div id="autofillList" style="overflow-y: auto; max-height: 500px;"></div>
+    </div>
+
+    <div class="container" style="width: 60%;">
+      <h2>Time to Pay Off Calculator</h2>
+      Interest Rate (%): <input type="number" id="interest" placeholder="e.g., 18">
+      Balance ($): <input type="number" id="balance" placeholder="e.g., 1000">
+      Desired Monthly Payment ($): <input type="number" id="monthly" placeholder="e.g., 100">
+      <button onclick="calculateTime()">Calculate</button>
+      <div id="result" class="result"></div>
+    </div>
+  </div>
+
   <script>
     function calculateTime() {
       const rate = parseFloat(document.getElementById("interest").value) / 100 / 12;
@@ -43,16 +75,28 @@
 
       document.getElementById("result").innerText = `Time to Pay Off: ${years.toFixed(2)} years`;
     }
+
+    window.addEventListener("load", () => {
+      fetch("/retrieve")
+        .then(res => res.json())
+        .then(data => {
+          const listDiv = document.getElementById("autofillList");
+          listDiv.innerHTML = "";
+
+          data.forEach((entry, index) => {
+            const btn = document.createElement("button");
+            btn.className = "autofill-btn";
+            btn.textContent = `Entry ${index + 1}: $${entry.amount} @ ${entry.interest}%`;
+            btn.onclick = () => {
+              document.getElementById("interest").value = entry.interest || "";
+              document.getElementById("balance").value = entry.amount || "";
+              document.getElementById("monthly").value = entry.monthly || "";
+            };
+            listDiv.appendChild(btn);
+          });
+        })
+        .catch(err => console.error("Failed to load autofill options:", err));
+    });
   </script>
-</head>
-<body>
-  <div class="container">
-    <h2>Time to Pay Off Calculator</h2>
-    Interest Rate (%): <input type="number" id="interest" placeholder="e.g., 18">
-    Balance ($): <input type="number" id="balance" placeholder="e.g., 1000">
-    Desired Monthly Payment ($): <input type="number" id="monthly" placeholder="e.g., 100">
-    <button onclick="calculateTime()">Calculate</button>
-    <div id="result" class="result"></div>
-  </div>
 </body>
 </html>
