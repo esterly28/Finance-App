@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Time to Pay Off Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      background: white;
+      max-width: 500px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      font-size: 1rem;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+  <script>
+    function calculateTime() {
+      const rate = parseFloat(document.getElementById("interest").value) / 100 / 12;
+      const balance = parseFloat(document.getElementById("balance").value);
+      const monthly = parseFloat(document.getElementById("monthly").value);
+
+      const numerator = -Math.log(1 - (rate * balance / monthly));
+      const denominator = 12 * Math.log(1 + rate);
+      const years = numerator / denominator;
+
+      document.getElementById("result").innerText = `Time to Pay Off: ${years.toFixed(2)} years`;
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Time to Pay Off Calculator</h2>
+    Interest Rate (%): <input type="number" id="interest" placeholder="e.g., 18">
+    Balance ($): <input type="number" id="balance" placeholder="e.g., 1000">
+    Desired Monthly Payment ($): <input type="number" id="monthly" placeholder="e.g., 100">
+    <button onclick="calculateTime()">Calculate</button>
+    <div id="result" class="result"></div>
+  </div>
+</body>
+</html>

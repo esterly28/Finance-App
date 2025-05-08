@@ -2,6 +2,7 @@ require("dotenv").config();
 const { MongoClient } = require("mongodb");
 const express = require("express");
 const path = require("path");
+const { ObjectId } = require("mongodb");
 
 const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
@@ -74,19 +75,19 @@ app.post("/creditcards", async (req, res) => {
 });
 
 // 🧹 Optional cleanup route if needed for deletion
-app.delete("/delete/:guestid", async (req, res) => {
-  try {
-    await client.connect();
-    const db = client.db("Finance_Storage");
-    const collection = db.collection("creditcards");
-    const query = { guestid: parseInt(req.params.guestid) };
-    const result = await collection.deleteOne(query);
-    res.send({ message: "Deleted", deletedCount: result.deletedCount });
-  } catch (err) {
-    console.error("Error deleting record:", err);
-    res.status(500).send({ error: err.message });
-  }
-});
+app.delete("/delete/:id", async (req, res) => {
+    try {
+      await client.connect();
+      const db = client.db("Finance_Storage");
+      const collection = db.collection("creditcards");
+  
+      const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
+      res.send({ message: "Deleted", deletedCount: result.deletedCount });
+    } catch (err) {
+      console.error("Error deleting record:", err);
+      res.status(500).send({ error: err.message });
+    }
+  });
 
 // Start server
 app.listen(port, () => {
