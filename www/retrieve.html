@@ -19,13 +19,13 @@
     </style>
     <script>
         window.addEventListener("load", () => {
-            fetch("http://localhost:7777/retrieve")
+            fetch("/retrieve")
                 .then(response => response.json())
                 .then(data => {
                     const container = document.getElementById("records");
                     container.innerHTML = "";
-
-                    data.forEach((item, index) => {
+    
+                    data.forEach((item) => {
                         const card = document.createElement("div");
                         card.className = "card";
                         card.innerHTML = `
