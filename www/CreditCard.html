@@ -5,7 +5,7 @@
     <title>Credit Card Form</title>
     <style>
         body {
-            background-color: #ccc; /* light grey */
+            background-color: #ccc;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -45,6 +45,17 @@
         input[type="button"]:hover {
             background-color: #45a049;
         }
+
+        a.cancel-button {
+            display: inline-block;
+            margin-top: 15px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        a.cancel-button:hover {
+            text-decoration: underline;
+        }
     </style>
     <script>
         window.addEventListener("load", function () {
@@ -53,10 +64,10 @@
 
         function sendData() {
             const data = {
-                interest: document.getElementById("guestid").value,
-                amount: parseFloat(document.getElementById("loanName").value),
-                timeToPayOff: document.getElementById("guestage").value,
-                provider: document.getElementById("guestcomment").value
+                guestid: parseInt(document.getElementById("guestid").value),
+                guestname: document.getElementById("guestname").value,
+                guestage: document.getElementById("guestage").value,
+                guestcomment: document.getElementById("guestcomment").value
             };
 
             fetch("/create", {
@@ -66,9 +77,12 @@
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error("Request failed");
+                return response.json();
+            })
             .then(result => {
-                alert(result.message || "Credit card data saved successfully!");
+                alert("Credit card data saved successfully!");
             })
             .catch(error => {
                 console.error("Error:", error);
@@ -80,10 +94,10 @@
 <body>
     <div class="container">
         <h1>Credit Card Information</h1>
-        Annual interest rate(%): <input id="guestid" type="text"><br>
-        Current amount needed to payoff: <input id="loanName" type="number"><br>
+        Annual interest rate (%): <input id="guestid" type="text"><br>
+        Card Nickname: <input id="guestname" type="text"><br>
         Desired time to pay off (years): <input id="guestage" type="text"><br>
-        Card Nickname: <input id="guestcomment" type="text"><br>
+        Current amount needed to pay off: <input id="guestcomment" type="text"><br>
         <input type="button" id="btn" value="UPDATE">
         <a href="index.html" class="cancel-button">Cancel</a>
     </div>
