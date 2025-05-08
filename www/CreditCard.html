@@ -59,7 +59,7 @@
                 provider: document.getElementById("guestcomment").value
             };
 
-            fetch("http://localhost:7777/creditcards", {
+            fetch("/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
