@@ -41,7 +41,7 @@
     </style>
     <script>
         window.addEventListener("load", () => {
-            fetch("http://localhost:7777/retrieve")
+            fetch("/retrieve")
                 .then(response => response.json())
                 .then(data => {
                     const list = document.getElementById("deleteList");
