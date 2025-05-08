@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Finance Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+  <script>
+    function calculate() {
+      const interest = parseFloat(document.getElementById("interest").value) / 100;
+      const balance = parseFloat(document.getElementById("balance").value);
+      const monthly = parseFloat(document.getElementById("monthly").value);
+      const years = parseFloat(document.getElementById("years").value);
+      const resultDiv = document.getElementById("result");
+
+      const r = interest / 12;
+
+      if (!isNaN(balance) && !isNaN(interest)) {
+        if (!isNaN(years) && isNaN(monthly)) {
+          // Calculate monthly payment
+          const months = years * 12;
+          const payment = (balance * r) / (1 - Math.pow(1 + r, -months));
+          resultDiv.innerText = `Monthly Payment: $${payment.toFixed(2)}`;
+        } else if (!isNaN(monthly) && isNaN(years)) {
+          // Calculate time to pay off
+          const numerator = -Math.log(1 - (r * balance) / monthly);
+          const denominator = 12 * Math.log(1 + r);
+          const totalYears = numerator / denominator;
+          resultDiv.innerText = `Time to Pay Off: ${totalYears.toFixed(2)} years`;
+        } else {
+          resultDiv.innerText = "Please enter either monthly payment OR time to pay off — not both.";
+        }
+      } else {
+        resultDiv.innerText = "Please fill out balance and interest rate correctly.";
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Debt Calculator</h1>
+
+    <label>Interest Rate (%)</label>
+    <input id="interest" type="number" placeholder="e.g., 18">
+
+    <label>Total Balance ($)</label>
+    <input id="balance" type="number" placeholder="e.g., 1500">
+
+    <label>Monthly Payment ($)</label>
+    <input id="monthly" type="number" placeholder="Leave blank if using years">
+
+    <label>Years to Pay Off</label>
+    <input id="years" type="number" placeholder="Leave blank if using monthly">
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div id="result" class="result"></div>
+  </div>
+</body>
+</html>
