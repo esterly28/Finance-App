@@ -12,26 +12,26 @@
 
       if (!id) {
         alert("Missing ID. Returning to retrieve page.");
-        window.location.href = "retrieve.html";
+        window.location.replace("retrieve.html");
         return;
       }
 
       if (confirm("Are you sure you want to delete this record?")) {
-        fetch(`/delete/${id}`, {
-          method: "DELETE"
-        })
-        .then(response => response.json())
-        .then(result => {
-          alert(result.message || "Deleted successfully!");
-          window.location.href = "retrieve.html";
-        })
-        .catch(err => {
-          console.error("Error deleting:", err);
-          alert("There was a problem deleting the record.");
-          window.location.href = "retrieve.html";
-        });
+        fetch(`/delete/${id}`, { method: "DELETE" })
+          .then(response => response.json())
+          .then(result => {
+            alert(result.message || "Deleted successfully!");
+            setTimeout(() => {
+              window.location.replace("retrieve.html");
+            }, 500); // wait for deletion to fully register
+          })
+          .catch(err => {
+            console.error("Error deleting:", err);
+            alert("There was a problem deleting the record.");
+            window.location.replace("retrieve.html");
+          });
       } else {
-        window.location.href = "delete.html";
+        window.location.replace("delete.html");
       }
     });
   </script>

@@ -19,7 +19,7 @@
     </style>
     <script>
         window.addEventListener("load", () => {
-            fetch("/retrieve")
+            fetch(`/retrieve?_=${Date.now()}`)  // busts cache
                 .then(response => response.json())
                 .then(data => {
                     const container = document.getElementById("records");
