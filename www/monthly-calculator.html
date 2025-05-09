@@ -87,7 +87,7 @@
             btn.onclick = () => {
               document.getElementById("interest").value = entry.interest || "";
               document.getElementById("balance").value = entry.amount || "";
-              document.getElementById("years").value = entry.timeToPayOff || "";
+              document.getElementById("years").value = "" || "";
             };
             listDiv.appendChild(btn);
           });

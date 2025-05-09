@@ -90,7 +90,7 @@
             btn.onclick = () => {
               document.getElementById("interest").value = entry.interest || "";
               document.getElementById("balance").value = entry.amount || "";
-              document.getElementById("monthly").value = entry.monthly || "";
+              document.getElementById("monthly").value = "" || "";
             };
             listDiv.appendChild(btn);
           });
