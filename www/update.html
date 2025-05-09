@@ -1,38 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <title>Update a Record</title>
   <link rel="stylesheet" href="Style/Style1.css">
   <link rel="stylesheet" href="Style/Style2.css">
+  <style>
+    .record {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px auto;
+      width: 80%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .record p {
+      margin: 5px 0;
+    }
+    .update-btn {
+      display: block;
+      margin: 10px auto;
+      font-size: 1.2em;
+      padding: 10px 20px;
+      background-color: #cfe4f7;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
   <script>
-    window.addEventListener("load", readAll);
-    function readAll() {
+    window.addEventListener("load", () => {
       fetch("/retrieve")
         .then(response => response.json())
         .then(data => {
-          const updateList = document.getElementById("updateList");
+          const container = document.getElementById("updateList");
+          container.innerHTML = "";
+
           data.forEach(row => {
-            updateList.innerHTML += `
-              <div class="card">
-                <a href="update-one.html?id=${row._id}">
-                  <h2>Update Entry</h2>
-                </a>
-                Name: ${row.provider}<br>
-                Age/Years: ${row.timeToPayOff}<br>
-                Comment/Note: ${row.interest}
-              </div>
+            const entry = document.createElement("div");
+            entry.className = "record";
+            entry.innerHTML = `
+              <a href="update-one.html?guestid=${row.guestid}">
+                <button class="update-btn">Update Entry</button>
+              </a>
+              <p><strong>Name:</strong> ${row.provider}</p>
+              <p><strong>Age/Years:</strong> ${row.timeToPayOff}</p>
+              <p><strong>Comment/Note:</strong> ${row.amount}</p>
             `;
+            container.appendChild(entry);
           });
         })
         .catch(err => {
-          console.error("Error loading records:", err);
-          document.getElementById("updateList").innerText = "Could not load data.";
+          document.getElementById("updateList").innerText = "Failed to load records.";
         });
-    }
+    });
   </script>
 </head>
 <body>
   <h1>Update a Record</h1>
-  <div id="updateList">Loading...</div>
-  <a href="index.html">Cancel and Return to Home</a>
+  <div id="updateList"></div>
+  <div style="text-align:center; margin-top: 20px;">
+    <a href="index.html">Cancel and Return to Home</a>
+  </div>
 </body>
 </html>
