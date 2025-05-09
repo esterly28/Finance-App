@@ -37,17 +37,35 @@ app.get("/retrieve", async (req, res) => {
 });
 
 // ✅ Retrieve a single credit card by guestid
-app.get("/retrieve-one/:guestid", async (req, res) => {
+app.get("/retrieve-one/:id", async (req, res) => {
   try {
     await client.connect();
     const db = client.db("Finance_Storage");
     const collection = db.collection("creditcards");
-    const query = { guestid: parseInt(req.params.guestid) };
-    const record = await collection.findOne(query);
+    const record = await collection.findOne({ _id: new ObjectId(req.params.id) });
     res.json(record);
   } catch (err) {
     console.error("Error retrieving single record:", err);
     res.status(500).json({ message: "Failed to retrieve record" });
+  }
+});
+
+// ✅ Update a record by MongoDB _id
+app.put("/update/:id", async (req, res) => {
+  try {
+    await client.connect();
+    const db = client.db("Finance_Storage");
+    const collection = db.collection("creditcards");
+
+    const result = await collection.updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: req.body }
+    );
+
+    res.json({ message: "Update successful", modifiedCount: result.modifiedCount });
+  } catch (err) {
+    console.error("Update error:", err);
+    res.status(500).send("Update failed");
   }
 });
 

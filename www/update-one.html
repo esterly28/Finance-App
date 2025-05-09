@@ -1,30 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <title>Update Credit Card Record</title>
   <link rel="stylesheet" href="Style/Style1.css">
   <link rel="stylesheet" href="Style/Style2.css">
   <script>
-    let guestid = "";
+    let entryId = "";
 
     window.addEventListener("load", () => {
       const params = new URLSearchParams(window.location.search);
-      guestid = params.get("id");
+      entryId = params.get("id");
 
-      if (!guestid) {
-        alert("Missing guest ID");
+      if (!entryId) {
+        alert("Missing ID");
         return;
       }
 
-      fetch(`/retrieve-one/${guestid}`)
+      fetch(`/retrieve-one/${entryId}`)
         .then(response => response.json())
         .then(data => {
-          if (data) {
-            document.getElementById("provider").value = data.provider || "";
-            document.getElementById("interest").value = data.interest || "";
-            document.getElementById("timeToPayOff").value = data.timeToPayOff || "";
-          } else {
-            alert("No entry found.");
-          }
+          if (!data) return alert("No entry found.");
+          document.getElementById("provider").value = data.provider || "";
+          document.getElementById("interest").value = data.interest || "";
+          document.getElementById("timeToPayOff").value = data.timeToPayOff || "";
         })
         .catch(err => {
           console.error(err);
@@ -34,19 +33,18 @@
 
     function updateEntry() {
       const updated = {
-        guestid: parseInt(guestid),
         provider: document.getElementById("provider").value,
         interest: document.getElementById("interest").value,
         timeToPayOff: document.getElementById("timeToPayOff").value
       };
 
-      fetch("/update", {
+      fetch(`/update/${entryId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updated)
       })
         .then(res => res.json())
-        .then(result => {
+        .then(() => {
           alert("Entry updated!");
           window.location.href = "index.html";
         })
