@@ -42,7 +42,7 @@
             const entry = document.createElement("div");
             entry.className = "record";
             entry.innerHTML = `
-              <a href="update-one.html?guestid=${row.guestid}">
+              <a href="update-one.html?id=${row._id}">
                 <button class="update-btn">Update Entry</button>
               </a>
               <p><strong>Name:</strong> ${row.provider}</p>

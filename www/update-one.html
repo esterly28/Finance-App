@@ -8,7 +8,7 @@
 
     window.addEventListener("load", () => {
       const params = new URLSearchParams(window.location.search);
-      guestid = params.get("guestid");
+      guestid = params.get("id");
 
       if (!guestid) {
         alert("Missing guest ID");
