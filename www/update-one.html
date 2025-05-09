@@ -4,32 +4,43 @@
   <link rel="stylesheet" href="Style/Style1.css">
   <link rel="stylesheet" href="Style/Style2.css">
   <script>
-    let entryId = "";
+    let guestid = "";
 
     window.addEventListener("load", () => {
       const params = new URLSearchParams(window.location.search);
-      entryId = params.get("id");
+      guestid = params.get("guestid");
 
-      fetch(`/retrieve`)
+      if (!guestid) {
+        alert("Missing guest ID");
+        return;
+      }
+
+      fetch(`/retrieve-one/${guestid}`)
         .then(response => response.json())
         .then(data => {
-          const entry = data.find(item => item._id === entryId);
-          if (entry) {
-            document.getElementById("provider").value = entry.provider;
-            document.getElementById("timeToPayOff").value = entry.timeToPayOff;
-            document.getElementById("interest").value = entry.interest;
+          if (data) {
+            document.getElementById("provider").value = data.provider || "";
+            document.getElementById("interest").value = data.interest || "";
+            document.getElementById("timeToPayOff").value = data.timeToPayOff || "";
+          } else {
+            alert("No entry found.");
           }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Failed to load entry.");
         });
     });
 
     function updateEntry() {
       const updated = {
+        guestid: parseInt(guestid),
         provider: document.getElementById("provider").value,
-        timeToPayOff: document.getElementById("timeToPayOff").value,
-        interest: document.getElementById("interest").value
+        interest: document.getElementById("interest").value,
+        timeToPayOff: document.getElementById("timeToPayOff").value
       };
 
-      fetch(`/update/${entryId}`, {
+      fetch("/update", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updated)
@@ -44,10 +55,10 @@
   </script>
 </head>
 <body>
-  <h1>Minimal CRUD Update One Record</h1>
+  <h1>Update Credit Card Record</h1>
   Nickname: <input id="provider"><br>
-  Interest: <input id="timeToPayOff"><br>
-  Years to pay off: <input id="interest"><br>
+  Interest (%): <input id="interest"><br>
+  Years to Pay Off: <input id="timeToPayOff"><br>
   <button onclick="updateEntry()">Update</button>
   <br><br>
   <a href="index.html">Cancel</a>
